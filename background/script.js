@@ -9,7 +9,7 @@ let enemies = [];
 let explosions = [];
 let mouseX = canvas.width / 2;
 let mouseY = canvas.height / 2;
-let score = 0;
+let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
 
 // Create a starry background
 function createStars() {
@@ -77,7 +77,6 @@ function drawEnemies() {
             const gradient = ctx.createLinearGradient(-enemy.size, enemy.size, enemy.size, enemy.size);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
             gradient.addColorStop(1, enemy.color);
-            ctx.fillStyle = gradient;
             ctx.moveTo(0, -enemy.size);
             ctx.lineTo(-enemy.size, enemy.size);
             ctx.lineTo(enemy.size, enemy.size);
@@ -96,7 +95,7 @@ function updateEnemies() {
         if (enemy.y > canvas.height) {
             enemies.splice(index, 1);
         }
-    });
+ });
 }
 
 // Create projectiles
@@ -167,6 +166,7 @@ function checkCollisions() {
                 enemies.splice(eIndex, 1); // Remove enemy
                 projectiles.splice(pIndex, 1); // Remove projectile
                 score++; // Increment score
+                localStorage.setItem('score', score); // Save score to localStorage
             }
         });
     });
