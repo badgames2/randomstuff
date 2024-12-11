@@ -3,6 +3,7 @@ body {
     overflow: hidden;
     background: black;
     position: relative;
+    font-family: Arial, sans-serif; /* Moved font-family here for consistency */
 }
 
 canvas {
@@ -18,10 +19,72 @@ canvas {
     color: white;
     text-align: center;
     padding: 20px;
-    font-family: Arial, sans-serif;
 }
 
 #score {
     font-size: 20px;
     margin-top: 20px;
+}
+
+#leaderboard {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+    max-width: 200px; /* Limit width */
+    text-align: left; /* Align text to the left */
+}
+
+#leaderboardList {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+#popup {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the popup */
+    background: rgba(0, 0, 0, 0.9); /* Dark background */
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    z-index: 2; /* Above everything else */
+    text-align: center;
+}
+
+#usernameInput {
+    display: none; /* Initially hidden */
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    padding: 5px;
+    border: 1px solid white;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
+    color: white;
+}
+
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: white;
+    color: black;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.7); /* Change background on hover */
 }
