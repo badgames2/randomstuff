@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    position: relative;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Canvas behind other content */
+}
+
+.content {
+    position: relative;
+    z-index: 1; /* Content above the canvas */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
