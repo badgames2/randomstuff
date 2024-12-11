@@ -2,7 +2,6 @@ body {
     margin: 0;
     overflow: hidden;
     background: black;
-    position: relative;
     font-family: Arial, sans-serif; /* Consistent font-family */
 }
 
@@ -14,14 +13,6 @@ canvas {
     width: 100%; /* Ensure canvas covers the full width */
     height: 100%; /* Ensure canvas covers the full height */
     background: transparent; /* Ensure the canvas is transparent */
-}
-
-.content {
-    position: relative;
-    z-index: 1; /* Content above the canvas */
-    color: white;
-    text-align: center;
-    padding: 20px;
 }
 
 #score, #deaths {
@@ -38,145 +29,4 @@ canvas {
 
 #deaths {
     top: 40px; /* Position deaths below score */
-}
-
-#leaderboard {
-    display: none; /* Initially hidden */
-    position: fixed; /* Changed to fixed for better positioning */
-    bottom: 10px; /* Position at the bottom */
-    right: 10px; /* Position at the right */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    border: 1px solid white;
-    border-radius: 5px;
-    padding: 10px;
-    color: white;
-    max-width: 200px; /* Limit width */
-    text-align: left; /* Align text to the left */
-    z-index: 10; /* Ensure it appears above other elements */
-}
-
-#leaderboardList {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margin */
-}
-
-#sidePanel {
-    display: none; /* Initially hidden */
-    position: fixed; /* Fixed position for side panel */
-    right: 0;
-    top: 0;
-    width: 200px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    z-index: 10; /* Ensure it appears above other elements */
-}
-
-#sidePanelButton {
-    position: fixed; /* Fixed position for the button */
-    bottom: 10px;
-    right: 220px; /* Adjust position to the left of the side panel */
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 10; /* Ensure it appears above other elements */
-}
-
-#popup {
-    display: none; /* Initially hidden */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center the popup */
-    background: rgba(0, 0, 0, 0.9); /* Dark background */
-    border: 2px solid white;
-    border-radius: 10px;
-    padding: 20px;
-    color: white;
-    z-index: 20; /* Above everything else */
-    text-align: center;
-}
-
-#usernameInput {
-    display: none; /* Initially hidden */
-    margin-top: 10px;
-}
-
-input[type="text"] {
-    padding: 5px;
-    border: 1px solid white
-        border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
-    color: white; /* Text color */
-}
-
-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-button:hover {
-    background: rgba(0, 0, 0, 0.9); /* Darker on hover */
-}
-
-/* Optional styles for the leaderboard */
-#leaderboard {
-    display: none; /* Initially hidden */
-    position: fixed; /* Fixed position for leaderboard */
-    bottom: 10px; /* Position at the bottom */
-    right: 10px; /* Position at the right */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    border: 1px solid white;
-    border-radius: 5px;
-    padding: 10px;
-    color: white;
-    max-width: 200px; /* Limit width */
-    text-align: left; /* Align text to the left */
-    z-index: 10; /* Ensure it appears above other elements */
-}
-
-#leaderboardList {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margin */
-}
-
-/* Add styles for the side panel */
-#sidePanel {
-    display: none; /* Initially hidden */
-    position: fixed; /* Fixed position for side panel */
-    right: 0;
-    top: 0;
-    width: 200px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    z-index: 10; /* Ensure it appears above other elements */
-}
-
-/* Add styles for the popup */
-#popup {
-    display: none; /* Initially hidden */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center the popup */
-    background: rgba(0, 0, 0, 0.9); /* Dark background */
-    border: 2px solid white;
-    border-radius: 10px;
-    padding: 20px;
-    color: white;
-    z-index: 20; /* Above everything else */
-    text-align: center;
 }
