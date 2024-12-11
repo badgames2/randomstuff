@@ -24,10 +24,23 @@
             position: absolute;
             bottom: 10px;
             right: 10px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(128, 0, 0, 0.8); /* Maroon red */
             padding: 10px;
             border-radius: 5px;
             display: none; /* Initially hidden */
+            transition: transform 0.3s; /* Smooth transition for hover effect */
+        }
+        #leaderboard:hover {
+            transform: scale(1.5); /* Grow on hover */
+        }
+        #leaderboardList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #leaderboardList li {
+            border-bottom: 1px solid white; /* Separate rows */
+            padding: 5px 0;
+            color: white;
         }
         #popup {
             position: fixed;
