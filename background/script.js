@@ -89,6 +89,7 @@ function createProjectile() {
     });
 }
 
+// ```javascript
 // Draw projectiles
 function drawProjectiles() {
     ctx.fillStyle = 'blue';
@@ -139,7 +140,7 @@ function drawExplosions() {
 }
 
 // Check for collisions
-function checkColl isions() {
+function checkCollisions() {
     projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
