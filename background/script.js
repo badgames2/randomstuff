@@ -89,7 +89,6 @@ function createProjectile() {
     });
 }
 
-// ```javascript
 // Draw projectiles
 function drawProjectiles() {
     ctx.fillStyle = 'blue';
@@ -141,7 +140,7 @@ function drawExplosions() {
 
 // Check for collisions
 function checkCollisions() {
-    projectiles.forEach((projectile, pIndex) => {
+    projectiles.forEach((projectile, pIndex ) => {
         enemies.forEach((enemy, eIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
             if (dist < enemy.size) {
@@ -171,9 +170,9 @@ function gameLoop() {
 // Initialize game
 createStars();
 setInterval(createEnemy, 1000); // Create a new enemy every second
+setInterval(createProjectile, 200); // Auto-shoot projectiles every 200ms
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY;
 });
-canvas.addEventListener('click', createProjectile);
 gameLoop();
