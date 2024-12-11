@@ -7,9 +7,11 @@ let stars = [];
 let projectiles = [];
 let enemies = [];
 let explosions = [];
+let enemyLasers = [];
 let mouseX = canvas.width / 2;
 let mouseY = canvas.height / 2;
 let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
+let deaths = 0; // Death counter
 let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
 // Create a starry background
@@ -42,8 +44,7 @@ function drawStars() {
 // Create enemies
 function createEnemy() {
     const size = Math.random() * 20 + 10;
-    const shape = Math.floor(Math.random() * 3); // 0: circle, 1: square
-    // 2: triangle
+    const shape = Math.floor(Math.random() * 3); // 0: circle, 1: square, 2: triangle
     enemies.push({
         x: Math.random() * canvas.width,
         y: 0,
@@ -83,7 +84,8 @@ function drawEnemies() {
             ctx.lineTo(-enemy.size, enemy.size);
             ctx.lineTo(enemy.size, enemy.size);
             ctx.closePath();
-        }
+            
+               }
         ctx.fill();
         ctx.restore();
         enemy.rotation += 0.05; // Rotate the enemy for a lively effect
@@ -167,11 +169,48 @@ function checkCollisions() {
                 createExplosion(enemy.x, enemy.y); // Create explosion at enemy's position
                 enemies.splice(eIndex, 1); // Remove enemy
                 projectiles.splice(pIndex, 1); // Remove projectile
-                            score++; // Increment score
+                score++; // Increment score
                 localStorage.setItem('score', score); // Save score to local Storage
                 updateLeaderboard(); // Update leaderboard after scoring
             }
         });
+    });
+
+    // Check for enemy lasers hitting the mouse
+    enemyLasers.forEach((laser, lIndex) => {
+        const dist = Math.hypot(laser.x - mouseX, laser.y - mouseY);
+        if (dist < 10) { // Assuming mouse has a radius of 10
+            enemyLasers.splice(lIndex, 1); // Remove laser
+            deaths++; // Increment death counter
+            localStorage.setItem('deaths', deaths); // Save deaths to local Storage
+        }
+    });
+}
+
+// Create enemy lasers
+function createEnemyLaser(enemy) {
+    enemyLasers.push({
+        x: enemy.x,
+        y: enemy.y,
+        speed: 3
+    });
+}
+
+// Draw enemy lasers
+function drawEnemyLasers() {
+    ctx.fillStyle = 'red';
+    enemyLasers.forEach(laser => {
+        ctx.fillRect(laser.x, laser.y, 2, 10);
+    });
+}
+
+// Update enemy lasers
+function updateEnemyLasers() {
+    enemyLasers.forEach((laser, lIndex) => {
+        laser.y += laser.speed; // Move laser downwards
+        if (laser.y > canvas.height) {
+            enemyLasers.splice(lIndex, 1); // Remove laser if it goes off screen
+        }
     });
 }
 
@@ -179,13 +218,10 @@ function checkCollisions() {
 function updateLeaderboard() {
     const username = localStorage.getItem('username');
     if (username) {
-        // Check if user is already on the leaderboard
         const existingEntryIndex = leaderboard.findIndex(entry => entry.username === username);
         if (existingEntryIndex !== -1) {
-            // Update score if user is already on the leaderboard
             leaderboard[existingEntryIndex].score = score;
         } else {
-            // Add new entry if user is not on the leaderboard
             leaderboard.push({ username, score });
         }
         leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
@@ -197,7 +233,8 @@ function updateLeaderboard() {
 
 // Display leaderboard
 function displayLeaderboard() {
-    const leaderboardList = document.getElementById('leaderboardList');
+    const leaderboardList = document.getElementById('leaderboard
+                                                    List');
     leaderboardList.innerHTML = '';
     leaderboard.forEach(entry => {
         const li = document.createElement('li');
@@ -242,6 +279,11 @@ document.getElementById('submitUsername').addEventListener('click', () => {
     }
 });
 
+// Handle mouse click to shoot lasers
+canvas.addEventListener('click', () => {
+    createProjectile(); // Create a projectile when mouse is clicked
+});
+
 // Main game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -249,20 +291,36 @@ function gameLoop() {
     drawEnemies();
     drawProjectiles();
     drawExplosions();
+    drawEnemyLasers();
     updateEnemies();
     updateProjectiles();
+    updateEnemyLasers();
     checkCollisions();
     document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('deaths').innerText = `Deaths: ${deaths}`; // Update death counter
     requestAnimationFrame(gameLoop);
 }
 
 // Initialize game
 createStars();
 setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds
+setInterval(() => {
+    enemies.forEach(enemy => createEnemyLaser(enemy)); // Create lasers from enemies
+}, 1000); // Create a laser every second
+
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
+    mouseY = event.clientY; // Update mouseY for laser collision detection
 });
 
 // Show the pop-up when the page loads
 window.onload = showPopup;
 gameLoop();
+
+// Side panel functionality
+const sidePanelButton = document.getElementById('sidePanelButton');
+const sidePanel = document.getElementById('sidePanel');
+
+sidePanelButton.addEventListener('click', () => {
+    sidePanel.style.display = sidePanel.style.display === 'block' ? 'none' : 'block'; // Toggle side panel
+});
