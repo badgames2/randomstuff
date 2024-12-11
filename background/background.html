@@ -4,19 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Your Game</title>
+    <title>badgames</title>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
     <div class="content">
-        <h1>Your Game Title</h1>
-        <p>Some description or instructions.</p>
+        <h1>WELCOME TO MY WEBSITE!</h1>
+        <p>click side panel to get started, or play my built in game.</p>
         <div id="score">Score: 0</div>
         <div id="deaths">Deaths: 0</div>
     </div>
     <div id="sidePanelButton">Open Side Panel</div>
-    <div id="sidePanel">Side Panel Content</div>
-    <div id="popup">Popup Content</div>
+    <div id="sidePanel">
+        <h2>Side Panel</h2>
+        <p>Additional content can go here.</p>
+    </div>
+    <div id="popup">
+        <h2>Welcome!</h2>
+        <p>Would you like to enter your username?</p>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+        <div id="usernameInput">
+            <input type="text" id="username" placeholder="Enter username (3 letters)">
+            <button id="submitUsername">Submit</button>
+        </div>
+    </div>
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboardList"></ul>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
