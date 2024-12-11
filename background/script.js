@@ -30,7 +30,8 @@ function drawStars() {
     stars.forEach(star => {
         star.y += star.speed; // Move stars downwards
         if (star.y > canvas.height) {
-            star.y = 0; // Reset star to the top star.x = Math.random() * canvas.width; // Randomize x position
+            star.y = 0; // Reset star to the top
+            star.x = Math.random() * canvas.width; // Randomize x position
         }
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -102,7 +103,7 @@ function updateEnemies() {
 function createProjectile() {
     projectiles.push({
         x: mouseX,
-        y: canvas.height - 30,
+        y: mouseY,
         speed: 5
     });
 }
@@ -157,11 +158,10 @@ function drawExplosions() {
 }
 
 // Check for collisions
-function checkCollisions ```javascript
-() {
+function checkCollisions() {
     projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
-            const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+            const dist = Math.h ypot(projectile.x - enemy.x, projectile.y - enemy.y);
             if (dist < enemy.size) {
                 createExplosion(enemy.x, enemy.y); // Create explosion at enemy's position
                 enemies.splice(eIndex, 1); // Remove enemy
@@ -181,8 +181,10 @@ function updateLeaderboard() {
         // Check if user is already on the leaderboard
         const existingEntryIndex = leaderboard.findIndex(entry => entry.username === username);
         if (existingEntryIndex !== -1) {
-            // Update score if user is already on the leaderboard
-            leaderboard[existingEntryIndex].score = score;
+            // Update score if user is already on the leaderboard and has a higher score
+            if (score > leaderboard[existingEntryIndex].score) {
+                leaderboard[existingEntryIndex].score = score;
+            }
         } else {
             // Add new entry if user is not on the leaderboard
             leaderboard.push({ username, score });
@@ -258,7 +260,7 @@ function gameLoop() {
 // Initialize game
 createStars();
 setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds (decreased frequency)
-setInterval(createProjectile, 200); // Auto-shoot projectiles every 200ms
+canvas.addEventListener('click', createProjectile); // Shoot projectiles from mouse click
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY;
