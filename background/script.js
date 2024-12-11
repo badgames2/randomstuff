@@ -47,26 +47,45 @@ function createEnemy() {
         y: 0,
         size: size,
         speed: Math.random() * 2 + 1,
-        shape: shape
+        shape: shape,
+        rotation: Math.random() * Math.PI * 2, // Random rotation angle
+        color: `hsl(${Math.random() * 360}, 100%, 50%)` // Random color
     });
 }
 
-// Draw enemies
+// Draw enemies with depth effect
 function drawEnemies() {
     enemies.forEach(enemy => {
-        ctx.fillStyle = 'red';
+        ctx.save();
+        ctx.fillStyle = enemy.color;
+        ctx.translate(enemy.x, enemy.y);
+        ctx.rotate(enemy.rotation);
         ctx.beginPath();
         if (enemy.shape === 0) { // Circle
-            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(0, 0, enemy.size / 4, 0, 0, enemy.size);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+            gradient.addColorStop(1, enemy.color);
+            ctx.fillStyle = gradient;
+            ctx.arc(0, 0, enemy.size, 0, Math.PI * 2);
         } else if (enemy.shape === 1) { // Square
-            ctx.rect(enemy.x - enemy.size / 2, enemy.y - enemy.size / 2, enemy.size, enemy.size);
+            const gradient = ctx.createLinearGradient(-enemy.size / 2, -enemy.size / 2, enemy.size / 2, enemy.size / 2);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+            gradient.addColorStop(1, enemy.color);
+            ctx.fillStyle = gradient;
+            ctx.rect(-enemy.size / 2, -enemy.size / 2, enemy.size, enemy.size);
         } else if (enemy.shape === 2) { // Triangle
-            ctx.moveTo(enemy.x, enemy.y - enemy.size);
-            ctx.lineTo(enemy.x - enemy.size, enemy.y + enemy.size);
-            ctx.lineTo(enemy.x + enemy.size, enemy.y + enemy.size);
+            const gradient = ctx.createLinearGradient(-enemy.size, enemy.size, enemy.size, enemy.size);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+            gradient.addColorStop(1, enemy.color);
+            ctx.fillStyle = gradient;
+            ctx.moveTo(0, -enemy.size);
+            ctx.lineTo(-enemy.size, enemy.size);
+            ctx.lineTo(enemy.size, enemy.size);
             ctx.closePath();
         }
         ctx.fill();
+        ctx.restore();
+        enemy.rotation += 0.05; // Rotate the enemy for a lively effect
     });
 }
 
@@ -140,7 +159,7 @@ function drawExplosions() {
 
 // Check for collisions
 function checkCollisions() {
-    projectiles.forEach((projectile, pIndex ) => {
+    projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
             if (dist < enemy.size) {
