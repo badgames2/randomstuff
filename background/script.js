@@ -30,8 +30,7 @@ function drawStars() {
     stars.forEach(star => {
         star.y += star.speed; // Move stars downwards
         if (star.y > canvas.height) {
-            star.y = 0; // Reset star to the top
-            star.x = Math.random() * canvas.width; // Randomize x position
+            star.y = 0; // Reset star to the top star.x = Math.random() * canvas.width; // Randomize x position
         }
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -46,7 +45,7 @@ function createEnemy() {
     enemies.push({
         x: Math.random() * canvas.width,
         y: 0,
- size: size,
+        size: size,
         speed: Math.random() * 2 + 1,
         shape: shape,
         rotation: Math.random() * Math.PI * 2, // Random rotation angle
@@ -158,7 +157,8 @@ function drawExplosions() {
 }
 
 // Check for collisions
-function checkCollisions() {
+function checkCollisions ```javascript
+() {
     projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
@@ -176,15 +176,21 @@ function checkCollisions() {
 
 // Update leaderboard
 function updateLeaderboard() {
-    if (score > 0) {
-        const username = localStorage.getItem('username');
-        if (username) {
+    const username = localStorage.getItem('username');
+    if (username) {
+        // Check if user is already on the leaderboard
+        const existingEntryIndex = leaderboard.findIndex(entry => entry.username === username);
+        if (existingEntryIndex !== -1) {
+            // Update score if user is already on the leaderboard
+            leaderboard[existingEntryIndex].score = score;
+        } else {
+            // Add new entry if user is not on the leaderboard
             leaderboard.push({ username, score });
-            leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
-            leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
-            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-            displayLeaderboard();
         }
+        leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
+        leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        displayLeaderboard();
     }
 }
 
@@ -203,7 +209,12 @@ function displayLeaderboard() {
 // Show pop-up for score usage
 function showPopup() {
     const popup = document.getElementById('popup');
-    popup.style.display = 'block';
+    const hasAnswered = localStorage.getItem('hasAnsweredPopup');
+    if (!hasAnswered) {
+        popup.style.display = 'block';
+    } else {
+        displayLeaderboard(); // Show leaderboard directly if already answered
+    }
 }
 
 // Event listeners for pop-up buttons
@@ -214,6 +225,7 @@ document.getElementById('yesButton').addEventListener('click', () => {
 document.getElementById('noButton').addEventListener('click', () => {
     const popup = document.getElementById('popup');
     popup.style.display = 'none'; // Close pop-up
+    localStorage.setItem('hasAnsweredPopup', 'true'); // Mark popup as answered
 });
 
 document.getElementById('submitUsername').addEventListener('click', () => {
@@ -223,6 +235,7 @@ document.getElementById('submitUsername').addEventListener('click', () => {
         const popup = document.getElementById('popup');
         popup.style.display = 'none'; // Close pop-up
         displayLeaderboard(); // Display leaderboard
+        localStorage.setItem('hasAnsweredPopup', 'true'); // Mark popup as answered
     } else {
         alert('Username must be 3 letters long.');
     }
@@ -244,7 +257,7 @@ function gameLoop() {
 
 // Initialize game
 createStars();
-setInterval(createEnemy, 1000); // Create a new enemy every second
+setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds (decreased frequency)
 setInterval(createProjectile, 200); // Auto-shoot projectiles every 200ms
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
