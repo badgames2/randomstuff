@@ -10,6 +10,7 @@ let explosions = [];
 let mouseX = canvas.width / 2;
 let mouseY = canvas.height / 2;
 let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
 // Create a starry background
 function createStars() {
@@ -45,7 +46,7 @@ function createEnemy() {
     enemies.push({
         x: Math.random() * canvas.width,
         y: 0,
-        size: size,
+ size: size,
         speed: Math.random() * 2 + 1,
         shape: shape,
         rotation: Math.random() * Math.PI * 2, // Random rotation angle
@@ -95,7 +96,7 @@ function updateEnemies() {
         if (enemy.y > canvas.height) {
             enemies.splice(index, 1);
         }
- });
+    });
 }
 
 // Create projectiles
@@ -166,11 +167,66 @@ function checkCollisions() {
                 enemies.splice(eIndex, 1); // Remove enemy
                 projectiles.splice(pIndex, 1); // Remove projectile
                 score++; // Increment score
-                localStorage.setItem('score', score); // Save score to localStorage
+                localStorage.setItem('score', score); // Save score to local Storage
+                updateLeaderboard(); // Update leaderboard after scoring
             }
         });
     });
 }
+
+// Update leaderboard
+function updateLeaderboard() {
+    if (score > 0) {
+        const username = localStorage.getItem('username');
+        if (username) {
+            leaderboard.push({ username, score });
+            leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
+            leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+            displayLeaderboard();
+        }
+    }
+}
+
+// Display leaderboard
+function displayLeaderboard() {
+    const leaderboardList = document.getElementById('leaderboardList');
+    leaderboardList.innerHTML = '';
+    leaderboard.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.username}: ${entry.score}`;
+        leaderboardList.appendChild(li);
+    });
+    document.getElementById('leaderboard').style.display = 'block'; // Show leaderboard
+}
+
+// Show pop-up for score usage
+function showPopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'block';
+}
+
+// Event listeners for pop-up buttons
+document.getElementById('yesButton').addEventListener('click', () => {
+    document.getElementById('usernameInput').style.display = 'block'; // Show username input
+});
+
+document.getElementById('noButton').addEventListener('click', () => {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'none'; // Close pop-up
+});
+
+document.getElementById('submitUsername').addEventListener('click', () => {
+    const username = document.getElementById('username').value;
+    if (username.length === 3) {
+        localStorage.setItem('username', username); // Save username
+        const popup = document.getElementById('popup');
+        popup.style.display = 'none'; // Close pop-up
+        displayLeaderboard(); // Display leaderboard
+    } else {
+        alert('Username must be 3 letters long.');
+    }
+});
 
 // Main game loop
 function gameLoop() {
@@ -194,4 +250,7 @@ canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY;
 });
+
+// Show the pop-up when the page loads
+window.onload = showPopup;
 gameLoop();
