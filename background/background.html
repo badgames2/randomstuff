@@ -3,16 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaga Style Game Background</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Laser Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        #gameCanvas {
+            display: block;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 24px;
+        }
+        #leaderboard {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* Initially hidden */
+        }
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none; /* Initially hidden */
+        }
+        #popup button {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div class="content">
-        <h1>Welcome to My Website</h1>
-        <p>This is a sample website with a Galaga-style game as the background.</p>
-        <button>Click Me!</button>
-        <div id="score">Score: 0</div>
+    <div id="score">Score: 0</div>
+    <div id="leaderboard">
+        <h3>Leaderboard</h3>
+        <ol id="leaderboardList"></ol>
+    </div>
+    <div id="popup">
+        <p>Can we use your score for the leaderboard?</p>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+        <div id="usernameInput" style="display: none;">
+            <p>Please enter a 3-letter username:</p>
+            <input type="text" id="username" maxlength="3" />
+            <button id="submitUsername">Submit</button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
