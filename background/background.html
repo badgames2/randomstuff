@@ -3,33 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laser Game</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="styles.css">
+    <title>Your Game</title>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div id="score">Score: 0</div>
-    <div id="deaths">Deaths: 0</div> <!-- Death counter -->
-    <div id="leaderboard">
-        <h3>Leaderboard</h3>
-        <ol id="leaderboardList"></ol>
+    <div class="content">
+        <h1>Your Game Title</h1>
+        <p>Some description or instructions.</p>
+        <div id="score">Score: 0</div>
+        <div id="deaths">Deaths: 0</div>
     </div>
-    <div id="sidePanel">
-        <h3>Side Panel</h3>
-        <p>Additional options can go here.</p>
-        <!-- Add more buttons or links as needed -->
-    </div>
-    <button id="sidePanelButton">Toggle Side Panel</button> <!-- Button to toggle side panel -->
-    <div id="popup">
-        <p>Can we use your score for the leaderboard?</p>
-        <button id="yesButton">Yes</button>
-        <button id="noButton">No</button>
-        <div id="usernameInput" style="display: none;">
-            <p>Please enter a 3-letter username:</p>
-            <input type="text" id="username" maxlength="3" />
-            <button id="submitUsername">Submit</button>
-        </div>
-    </div>
-    <script src="script.js"></script> <!-- Ensure this path is correct -->
+    <div id="sidePanelButton">Open Side Panel</div>
+    <div id="sidePanel">Side Panel Content</div>
+    <div id="popup">Popup Content</div>
+    <script src="script.js"></script>
 </body>
 </html>
