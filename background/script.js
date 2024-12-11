@@ -43,50 +43,22 @@ function drawStars() {
 // Create enemies
 function createEnemy() {
     const size = Math.random() * 20 + 10;
-    const shape = Math.floor(Math.random() * 3); // 0: circle, 1: square, 2: triangle
     enemies.push({
         x: Math.random() * canvas.width,
         y: 0,
         size: size,
         speed: Math.random() * 2 + 1,
-        shape: shape,
-        rotation: Math.random() * Math.PI * 2, // Random rotation angle
         color: `hsl(${Math.random() * 360}, 100%, 50%)` // Random color
     });
 }
 
-// Draw enemies with depth effect
+// Draw enemies
 function drawEnemies() {
     enemies.forEach(enemy => {
-        ctx.save();
         ctx.fillStyle = enemy.color;
-        ctx.translate(enemy.x, enemy.y);
-        ctx.rotate(enemy.rotation);
         ctx.beginPath();
-        if (enemy.shape === 0) { // Circle
-            const gradient = ctx.createRadialGradient(0, 0, enemy.size / 4, 0, 0, enemy.size);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
-            gradient.addColorStop(1, enemy.color);
-            ctx.fillStyle = gradient;
-            ctx.arc(0, 0, enemy.size, 0, Math.PI * 2);
-        } else if (enemy.shape === 1) { // Square
-            const gradient = ctx.createLinearGradient(-enemy.size / 2, -enemy.size / 2, enemy.size / 2, enemy.size / 2);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
-            gradient.addColorStop(1, enemy.color);
-            ctx.fillStyle = gradient;
-            ctx.rect(-enemy.size / 2, -enemy.size / 2, enemy.size, enemy.size);
-        } else if (enemy.shape === 2) { // Triangle
-            const gradient = ctx.createLinearGradient(-enemy.size, enemy.size, enemy.size, enemy.size);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
-            gradient.addColorStop(1, enemy.color);
-            ctx.moveTo(0, -enemy.size);
-            ctx.lineTo(-enemy.size, enemy.size);
-            ctx.lineTo(enemy.size, enemy.size);
-            ctx.closePath();
-        }
+        ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
-        enemy.rotation += 0.05; // Rotate the enemy for a lively effect
     });
 }
 
@@ -97,6 +69,10 @@ function updateEnemies() {
         if (enemy.y > canvas.height) {
             enemies.splice(index, 1);
         }
+        // Randomly shoot laser
+        if (Math.random() < 0.02) { // 2% chance to shoot each frame
+            createEnemyLaser(enemy);
+        }
     });
 }
 
@@ -104,7 +80,7 @@ function updateEnemies() {
 function createProjectile() {
     projectiles.push({
         x: mouseX,
-        y: canvas.height - 30,
+        y: mouseY, // Start from the mouse position
         speed: 5
     });
 }
@@ -120,9 +96,36 @@ function drawProjectiles() {
 // Update projectiles
 function updateProjectiles() {
     projectiles.forEach((projectile, pIndex) => {
-        projectile.y -= projectile.speed;
+        projectile.y -= projectile.speed; // Move upwards
         if (projectile.y < 0) {
-            projectiles.splice(pIndex, 1);
+            projectiles.splice(pIndex, 1); // Remove if off screen
+        }
+    });
+}
+
+// Create enemy laser
+function createEnemyLaser(enemy) {
+    enemyLasers.push({
+        x: enemy.x,
+        y: enemy.y,
+        speed: 3
+    });
+}
+
+// Draw enemy lasers
+function drawEnemyLasers() {
+    ctx.fillStyle = 'red';
+    enemyLasers.forEach(laser => {
+        ctx.fillRect(laser.x, laser.y, 5, 20);
+    });
+}
+
+// Update enemy lasers
+function updateEnemyLasers() {
+    enemyLasers.forEach((laser, index) => {
+        laser.y += laser.speed; // Move downwards
+        if (laser.y > canvas.height) {
+            enemyLasers.splice(index, 1); // Remove if off screen
         }
     });
 }
@@ -141,116 +144,79 @@ function createExplosion(x, y) {
 // Draw explosions
 function drawExplosions() {
     explosions.forEach((explosion, index) => {
-        ctx.fillStyle = `rgba(255, 165, 0, ${explosion.alpha})`; // Orange color
+        ctx.fillStyle = `rgba(255, 165, 0, ${explosion.alpha})`;
         ctx.beginPath();
         ctx.arc(explosion.x, explosion.y, explosion.radius, 0, Math.PI * 2);
         ctx.fill();
-        
-        // Update explosion properties
-        explosion.radius += 2; // Increase radius
-        explosion.alpha -= 0.05; // Decrease alpha
-        explosion.life--;
-
-        // Remove explosion if life is over
-        if (explosion.life <= 0) {
-            explosions.splice(index, 1);
+        explosion.alpha -= 0.05; // Fade out effect
+        explosion.radius += 0.5; // Expand effect
+        if (explosion.alpha <= 0) {
+            explosions.splice(index, 1); // Remove ```javascript
         }
     });
+}
+
+// Update game state
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawStars();
+    drawEnemies();
+    updateEnemies();
+    drawProjectiles();
+    updateProjectiles();
+    drawEnemyLasers();
+    updateEnemyLasers();
+    drawExplosions();
+    checkCollisions();
+    document.getElementById('score').innerHTML = `Score: ${score}`;
+    document.getElementById('deaths').innerHTML = `Deaths: ${deaths}`;
 }
 
 // Check for collisions
 function checkCollisions() {
+    // Check for projectile collisions with enemies
     projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
-            const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
-            if (dist < enemy.size) {
-                createExplosion(enemy.x, enemy.y); // Create explosion at enemy's position
-                enemies.splice(eIndex, 1); // Remove enemy
-                projectiles.splice(pIndex, 1); // Remove projectile
-                score++; // Increment score
-                localStorage.setItem('score', score); // Save score to local Storage
+            if (Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y) < enemy.size) {
+                // Remove projectile and enemy
+                projectiles.splice(pIndex, 1);
+                enemies.splice(eIndex, 1);
+                // Increase score
+                score++;
+                localStorage.setItem('score', score);
+                // Create explosion
+                createExplosion(projectile.x, projectile.y);
             }
         });
     });
 
-    // Check for enemy lasers hitting the mouse
+    // Check for enemy laser collisions with player
     enemyLasers.forEach((laser, lIndex) => {
-        const dist = Math.hypot(laser.x - mouseX, laser.y - mouseY);
-        if (dist < 10) { // Assuming mouse has a radius of 10
-            enemyLasers.splice(lIndex, 1); // Remove laser
-            deaths++; // Increment death counter
-            localStorage.setItem('deaths', deaths); // Save deaths to local Storage
+        if (Math.hypot(laser.x - mouseX, laser.y - mouseY) < 20) {
+            // Remove laser
+            enemyLasers.splice(lIndex, 1);
+            // Increase deaths
+            deaths++;
+            // Create explosion
+            createExplosion(laser.x, laser.y);
         }
     });
 }
 
-// Create enemy lasers
-function createEnemyLaser(enemy) {
-    enemyLasers.push({
-        x: enemy.x,
-        y: enemy.y,
-        speed: 3
-    });
-}
-
-// Draw enemy lasers
-function drawEnemyLasers() {
-    ctx.fillStyle = 'red';
-    enemyLasers.forEach(laser => {
-        ctx.fillRect(laser.x, laser.y, 2, 10);
-    });
-}
-
-// Update enemy lasers
-function updateEnemyLasers() {
-    enemyLasers.forEach((laser, lIndex) => {
-        laser.y += laser.speed; // Move laser downwards
-        if (laser.y > canvas.height) {
-            enemyLasers.splice(lIndex, 1); // Remove laser if it goes off screen
-        }
-    });
-}
-
-// Randomized enemy laser shooting
-function randomEnemyShooting() {
-    enemies.forEach(enemy => {
-        if (Math.random() < 0.02) { // 2% chance to shoot each frame
-            createEnemyLaser(enemy);
-        }
-    });
-}
-
-// Main game loop
-function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawStars();
-    drawEnemies();
-    drawProjectiles();
-    drawExplosions();
-    drawEnemyLasers();
-    updateEnemies();
-    updateProjectiles();
-    updateEnemyLasers();
-    checkCollisions();
-    randomEnemyShooting(); // Call the random shooting function
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('deaths').innerText = `Deaths: ${deaths}`; // Update death counter
-    requestAnimationFrame(gameLoop);
-}
-
-// Initialize game
-createStars();
-setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds
-
-canvas.addEventListener('mousemove', (event) => {
-    mouseX = event.clientX;
-    mouseY = event.clientY; // Update mouseY for laser collision detection
-});
-
-// Handle mouse click to shoot lasers
+// Handle mouse click
 canvas.addEventListener('click', () => {
-    createProjectile(); // Create a projectile when mouse is clicked
+    createProjectile();
 });
 
-// Start the game loop
-gameLoop();
+// Handle mouse move
+canvas.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Create initial stars and enemies
+createStars();
+setInterval(createEnemy, 1000); // Create a new enemy every second
+
+// Start game loop
+setInterval(update, 1000 / 60);
