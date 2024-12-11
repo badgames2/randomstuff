@@ -30,7 +30,8 @@ function drawStars() {
     stars.forEach(star => {
         star.y += star.speed; // Move stars downwards
         if (star.y > canvas.height) {
-            star.y = 0; // Reset star to the top star.x = Math.random() * canvas.width; // Randomize x position
+            star.y = 0; // Reset star to the top
+            star.x = Math.random() * canvas.width; // Randomize x position
         }
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -41,7 +42,8 @@ function drawStars() {
 // Create enemies
 function createEnemy() {
     const size = Math.random() * 20 + 10;
-    const shape = Math.floor(Math.random() * 3); // 0: circle, 1: square, 2: triangle
+    const shape = Math.floor(Math.random() * 3); // 0: circle, 1: square
+    // 2: triangle
     enemies.push({
         x: Math.random() * canvas.width,
         y: 0,
@@ -157,8 +159,7 @@ function drawExplosions() {
 }
 
 // Check for collisions
-function checkCollisions ```javascript
-() {
+function checkCollisions() {
     projectiles.forEach((projectile, pIndex) => {
         enemies.forEach((enemy, eIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
@@ -166,7 +167,7 @@ function checkCollisions ```javascript
                 createExplosion(enemy.x, enemy.y); // Create explosion at enemy's position
                 enemies.splice(eIndex, 1); // Remove enemy
                 projectiles.splice(pIndex, 1); // Remove projectile
-                score++; // Increment score
+                            score++; // Increment score
                 localStorage.setItem('score', score); // Save score to local Storage
                 updateLeaderboard(); // Update leaderboard after scoring
             }
@@ -257,11 +258,9 @@ function gameLoop() {
 
 // Initialize game
 createStars();
-setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds (decreased frequency)
-setInterval(createProjectile, 200); // Auto-shoot projectiles every 200ms
+setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
-    mouseY = event.clientY;
 });
 
 // Show the pop-up when the page loads
