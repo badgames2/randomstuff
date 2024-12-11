@@ -12,7 +12,6 @@ let mouseX = canvas.width / 2;
 let mouseY = canvas.height / 2;
 let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
 let deaths = 0; // Death counter
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
 // Create a starry background
 function createStars() {
@@ -84,8 +83,7 @@ function drawEnemies() {
             ctx.lineTo(-enemy.size, enemy.size);
             ctx.lineTo(enemy.size, enemy.size);
             ctx.closePath();
-            
-               }
+        }
         ctx.fill();
         ctx.restore();
         enemy.rotation += 0.05; // Rotate the enemy for a lively effect
@@ -111,7 +109,7 @@ function createProjectile() {
     });
 }
 
-// Draw projectiles
+// Draw projectiles ```javascript
 function drawProjectiles() {
     ctx.fillStyle = 'blue';
     projectiles.forEach(projectile => {
@@ -171,7 +169,6 @@ function checkCollisions() {
                 projectiles.splice(pIndex, 1); // Remove projectile
                 score++; // Increment score
                 localStorage.setItem('score', score); // Save score to local Storage
-                updateLeaderboard(); // Update leaderboard after scoring
             }
         });
     });
@@ -214,76 +211,6 @@ function updateEnemyLasers() {
     });
 }
 
-// Update leaderboard
-function updateLeaderboard() {
-    const username = localStorage.getItem('username');
-    if (username) {
-        const existingEntryIndex = leaderboard.findIndex(entry => entry.username === username);
-        if (existingEntryIndex !== -1) {
-            leaderboard[existingEntryIndex].score = score;
-        } else {
-            leaderboard.push({ username, score });
-        }
-        leaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
-        leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-        displayLeaderboard();
-    }
-}
-
-// Display leaderboard
-function displayLeaderboard() {
-    const leaderboardList = document.getElementById('leaderboard
-                                                    List');
-    leaderboardList.innerHTML = '';
-    leaderboard.forEach(entry => {
-        const li = document.createElement('li');
-        li.textContent = `${entry.username}: ${entry.score}`;
-        leaderboardList.appendChild(li);
-    });
-    document.getElementById('leaderboard').style.display = 'block'; // Show leaderboard
-}
-
-// Show pop-up for score usage
-function showPopup() {
-    const popup = document.getElementById('popup');
-    const hasAnswered = localStorage.getItem('hasAnsweredPopup');
-    if (!hasAnswered) {
-        popup.style.display = 'block';
-    } else {
-        displayLeaderboard(); // Show leaderboard directly if already answered
-    }
-}
-
-// Event listeners for pop-up buttons
-document.getElementById('yesButton').addEventListener('click', () => {
-    document.getElementById('usernameInput').style.display = 'block'; // Show username input
-});
-
-document.getElementById('noButton').addEventListener('click', () => {
-    const popup = document.getElementById('popup');
-    popup.style.display = 'none'; // Close pop-up
-    localStorage.setItem('hasAnsweredPopup', 'true'); // Mark popup as answered
-});
-
-document.getElementById('submitUsername').addEventListener('click', () => {
-    const username = document.getElementById('username').value;
-    if (username.length === 3) {
-        localStorage.setItem('username', username); // Save username
-        const popup = document.getElementById('popup');
-        popup.style.display = 'none'; // Close pop-up
-        displayLeaderboard(); // Display leaderboard
-        localStorage.setItem('hasAnsweredPopup', 'true'); // Mark popup as answered
-    } else {
-        alert('Username must be 3 letters long.');
-    }
-});
-
-// Handle mouse click to shoot lasers
-canvas.addEventListener('click', () => {
-    createProjectile(); // Create a projectile when mouse is clicked
-});
-
 // Main game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -313,14 +240,5 @@ canvas.addEventListener('mousemove', (event) => {
     mouseY = event.clientY; // Update mouseY for laser collision detection
 });
 
-// Show the pop-up when the page loads
-window.onload = showPopup;
+// Start the game loop
 gameLoop();
-
-// Side panel functionality
-const sidePanelButton = document.getElementById('sidePanelButton');
-const sidePanel = document.getElementById('sidePanel');
-
-sidePanelButton.addEventListener('click', () => {
-    sidePanel.style.display = sidePanel.style.display === 'block' ? 'none' : 'block'; // Toggle side panel
-});
