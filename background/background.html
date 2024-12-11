@@ -4,55 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laser Game</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: black;
-        }
-        #gameCanvas {
-            display: block;
-        }
-        #score {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 24px;
-        }
-        #leaderboard {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(128, 0, 0, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        #leaderboardList {
-            list-style-type: none;
-            padding: 0;
-        }
-        #leaderboardList li {
-            border-bottom: 1px solid white;
-            padding: 5px 0;
-            color: white;
-        }
-        #popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: none;
-        }
-        #popup button {
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
