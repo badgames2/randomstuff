@@ -109,7 +109,7 @@ function createProjectile() {
     });
 }
 
-// Draw projectiles ```javascript
+// Draw projectiles
 function drawProjectiles() {
     ctx.fillStyle = 'blue';
     projectiles.forEach(projectile => {
@@ -211,6 +211,15 @@ function updateEnemyLasers() {
     });
 }
 
+// Randomized enemy laser shooting
+function randomEnemyShooting() {
+    enemies.forEach(enemy => {
+        if (Math.random() < 0.02) { // 2% chance to shoot each frame
+            createEnemyLaser(enemy);
+        }
+    });
+}
+
 // Main game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -223,6 +232,7 @@ function gameLoop() {
     updateProjectiles();
     updateEnemyLasers();
     checkCollisions();
+    randomEnemyShooting(); // Call the random shooting function
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('deaths').innerText = `Deaths: ${deaths}`; // Update death counter
     requestAnimationFrame(gameLoop);
@@ -231,13 +241,15 @@ function gameLoop() {
 // Initialize game
 createStars();
 setInterval(createEnemy, 2000); // Create a new enemy every 2 seconds
-setInterval(() => {
-    enemies.forEach(enemy => createEnemyLaser(enemy)); // Create lasers from enemies
-}, 1000); // Create a laser every second
 
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY; // Update mouseY for laser collision detection
+});
+
+// Handle mouse click to shoot lasers
+canvas.addEventListener('click', () => {
+    createProjectile(); // Create a projectile when mouse is clicked
 });
 
 // Start the game loop
